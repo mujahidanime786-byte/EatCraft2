@@ -1,0 +1,414 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated user profile with role and account status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "phone": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "role": { "type": "string", "enum": ["CUSTOMER", "RESTAURANT_OWNER", "DELIVERY_PARTNER", "SUPER_ADMIN"] },
+        "accountStatus": { "type": "string", "enum": ["ACTIVE", "SUSPENDED"] },
+        "tenantId": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "FieldValue.serverTimestamp()" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "FieldValue.serverTimestamp()" }
+      },
+      "required": ["uid", "email", "displayName", "role", "accountStatus", "createdAt", "updatedAt"]
+    },
+    "DeliveryAddress": {
+      "title": "DeliveryAddress",
+      "description": "Customer saved delivery address with coordinates",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "label": { "type": "string" },
+        "addressLine": { "type": "string" },
+        "landmark": { "type": "string" },
+        "city": { "type": "string" },
+        "pincode": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "primaryAddress": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "label", "addressLine", "city", "pincode", "latitude", "longitude", "primaryAddress", "createdAt", "updatedAt"]
+    },
+    "CartItem": {
+      "title": "CartItem",
+      "description": "Customer cart item scoped to a single user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "restaurantName": { "type": "string" },
+        "restaurantOwnerUid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "menuItemId": { "type": "string" },
+        "name": { "type": "string" },
+        "priceInr": { "type": "integer" },
+        "quantity": { "type": "integer" },
+        "veg": { "type": "boolean" },
+        "imageKey": { "type": "string" },
+        "imageUri": { "type": "string" },
+        "selectedAddOn": { "type": "string" },
+        "addOnPriceInr": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "restaurantId", "restaurantName", "restaurantOwnerUid", "tenantId", "menuItemId", "name", "priceInr", "quantity", "veg", "imageKey", "createdAt", "updatedAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "User notification record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "category": { "type": "string", "enum": ["ORDER", "PAYMENT", "DELIVERY", "SYSTEM"] },
+        "orderId": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "body", "category", "read", "createdAt", "updatedAt"]
+    },
+    "BusinessTenant": {
+      "title": "BusinessTenant",
+      "description": "Independent multi-tenant business client managed by Super Admin",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "city": { "type": "string" },
+        "status": { "type": "string", "enum": ["ACTIVE", "SUSPENDED"] },
+        "plan": { "type": "string", "enum": ["ENTERPRISE", "GROWTH", "STARTER"] },
+        "ownerUid": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "commissionPercent": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "code", "city", "status", "plan", "ownerUid", "commissionPercent", "createdAt", "updatedAt"]
+    },
+    "Restaurant": {
+      "title": "Restaurant",
+      "description": "Tenant-isolated restaurant partner storefront",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "cuisine": { "type": "string" },
+        "city": { "type": "string" },
+        "addressLabel": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "integer" },
+        "deliveryTimeMins": { "type": "integer" },
+        "deliveryFeeInr": { "type": "integer" },
+        "minOrderInr": { "type": "integer" },
+        "commissionPercent": { "type": "integer" },
+        "openNow": { "type": "boolean" },
+        "approvalStatus": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED", "SUSPENDED"] },
+        "imageKey": { "type": "string" },
+        "logoLabel": { "type": "string" },
+        "promoTag": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "cuisine", "city", "addressLabel", "tenantId", "ownerUid", "rating", "reviewCount", "deliveryTimeMins", "deliveryFeeInr", "minOrderInr", "commissionPercent", "openNow", "approvalStatus", "imageKey", "latitude", "longitude", "createdAt", "updatedAt"]
+    },
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "Restaurant menu dish with INR pricing, veg flag, and add-ons",
+      "type": "object",
+      "properties": {
+        "restaurantId": { "type": "string" },
+        "restaurantName": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "ownerUid": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "priceInr": { "type": "integer" },
+        "originalPriceInr": { "type": "integer" },
+        "discountPercent": { "type": "integer" },
+        "veg": { "type": "boolean" },
+        "available": { "type": "boolean" },
+        "prepTimeMins": { "type": "integer" },
+        "imageKey": { "type": "string" },
+        "imageUri": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "integer" },
+        "customizations": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["restaurantId", "restaurantName", "tenantId", "ownerUid", "name", "description", "category", "priceInr", "originalPriceInr", "discountPercent", "veg", "available", "prepTimeMins", "imageKey", "rating", "reviewCount", "customizations", "createdAt", "updatedAt"]
+    },
+    "FoodOrder": {
+      "title": "FoodOrder",
+      "description": "Multi-party order synchronized across Customer, Restaurant, Driver, and Super Admin",
+      "type": "object",
+      "properties": {
+        "customerUid": { "type": "string" },
+        "customerName": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "restaurantName": { "type": "string" },
+        "restaurantOwnerUid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "driverUid": { "type": "string" },
+        "driverName": { "type": "string" },
+        "status": { "type": "string", "enum": ["PLACED", "ACCEPTED", "PREPARING", "READY_FOR_PICKUP", "DRIVER_ASSIGNED", "REACHED_RESTAURANT", "PICKED_UP", "ON_THE_WAY", "DELIVERED", "CANCELLED", "REJECTED"] },
+        "items": { "type": "array" },
+        "subtotalInr": { "type": "integer" },
+        "deliveryFeeInr": { "type": "integer" },
+        "discountInr": { "type": "integer" },
+        "totalInr": { "type": "integer" },
+        "couponCode": { "type": "string" },
+        "paymentMethod": { "type": "string", "enum": ["RAZORPAY_UPI", "RAZORPAY_CARD", "RAZORPAY_NETBANKING", "COD"] },
+        "paymentStatus": { "type": "string", "enum": ["CREATED", "PAID", "COD_PENDING", "REFUNDED"] },
+        "razorpayOrderId": { "type": "string" },
+        "razorpayPaymentId": { "type": "string" },
+        "deliveryAddressLabel": { "type": "string" },
+        "deliveryLat": { "type": "number" },
+        "deliveryLng": { "type": "number" },
+        "restaurantLat": { "type": "number" },
+        "restaurantLng": { "type": "number" },
+        "prepTimeMins": { "type": "integer" },
+        "cancellationReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerUid", "customerName", "restaurantId", "restaurantName", "restaurantOwnerUid", "tenantId", "status", "items", "subtotalInr", "deliveryFeeInr", "discountInr", "totalInr", "paymentMethod", "paymentStatus", "deliveryAddressLabel", "deliveryLat", "deliveryLng", "restaurantLat", "restaurantLng", "prepTimeMins", "createdAt", "updatedAt"]
+    },
+    "DeliveryOffer": {
+      "title": "DeliveryOffer",
+      "description": "PII-free delivery pickup offer visible to delivery partners",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "restaurantName": { "type": "string" },
+        "restaurantOwnerUid": { "type": "string" },
+        "restaurantAddress": { "type": "string" },
+        "areaLabel": { "type": "string" },
+        "payoutInr": { "type": "integer" },
+        "distanceKm": { "type": "number" },
+        "status": { "type": "string", "enum": ["OPEN", "CLAIMED", "CANCELLED"] },
+        "driverUid": { "type": "string" },
+        "restaurantLat": { "type": "number" },
+        "restaurantLng": { "type": "number" },
+        "deliveryLat": { "type": "number" },
+        "deliveryLng": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "tenantId", "restaurantId", "restaurantName", "restaurantOwnerUid", "restaurantAddress", "areaLabel", "payoutInr", "distanceKm", "status", "restaurantLat", "restaurantLng", "deliveryLat", "deliveryLng", "createdAt", "updatedAt"]
+    },
+    "DeliveryPartner": {
+      "title": "DeliveryPartner",
+      "description": "Delivery partner profile, verification, and availability",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "vehicleType": { "type": "string" },
+        "vehiclePlate": { "type": "string" },
+        "city": { "type": "string" },
+        "approvalStatus": { "type": "string", "enum": ["PENDING", "APPROVED", "SUSPENDED"] },
+        "online": { "type": "boolean" },
+        "completedDeliveries": { "type": "integer" },
+        "totalEarningsInr": { "type": "integer" },
+        "rating": { "type": "number" },
+        "currentLat": { "type": "number" },
+        "currentLng": { "type": "number" },
+        "tenantId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "vehicleType", "vehiclePlate", "city", "approvalStatus", "online", "completedDeliveries", "totalEarningsInr", "rating", "createdAt", "updatedAt"]
+    },
+    "LiveLocation": {
+      "title": "LiveLocation",
+      "description": "Real-time GPS telemetry shared by assigned delivery partner for an active order",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerUid": { "type": "string" },
+        "restaurantOwnerUid": { "type": "string" },
+        "driverUid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "accuracyMeters": { "type": "number" },
+        "speedMps": { "type": "number" },
+        "bearing": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "customerUid", "restaurantOwnerUid", "driverUid", "tenantId", "latitude", "longitude", "accuracyMeters", "speedMps", "bearing", "createdAt", "updatedAt"]
+    },
+    "PaymentRecord": {
+      "title": "PaymentRecord",
+      "description": "Razorpay test-mode and COD payment transaction log",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerUid": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "restaurantOwnerUid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "amountInr": { "type": "integer" },
+        "commissionInr": { "type": "integer" },
+        "method": { "type": "string", "enum": ["RAZORPAY_UPI", "RAZORPAY_CARD", "RAZORPAY_NETBANKING", "COD"] },
+        "status": { "type": "string", "enum": ["CREATED", "PAID", "COD_PENDING", "REFUNDED"] },
+        "razorpayOrderId": { "type": "string" },
+        "razorpayPaymentId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "customerUid", "restaurantId", "restaurantOwnerUid", "tenantId", "amountInr", "commissionInr", "method", "status", "createdAt", "updatedAt"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "Promotional discount coupon",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "title": { "type": "string" },
+        "discountPercent": { "type": "integer" },
+        "maxDiscountInr": { "type": "integer" },
+        "minOrderInr": { "type": "integer" },
+        "active": { "type": "boolean" },
+        "tenantId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "title", "discountPercent", "maxDiscountInr", "minOrderInr", "active", "tenantId", "createdAt", "updatedAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer rating and review for a restaurant order",
+      "type": "object",
+      "properties": {
+        "orderId": { "type": "string" },
+        "restaurantId": { "type": "string" },
+        "customerUid": { "type": "string" },
+        "customerName": { "type": "string" },
+        "rating": { "type": "integer" },
+        "comment": { "type": "string" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "restaurantId", "customerUid", "customerName", "rating", "comment", "published", "createdAt", "updatedAt"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "Customer or partner support inquiry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "role": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["OPEN", "IN_PROGRESS", "RESOLVED"] },
+        "adminReply": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userName", "role", "subject", "message", "status", "createdAt", "updatedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable Super Admin administrative action log",
+      "type": "object",
+      "properties": {
+        "adminUid": { "type": "string" },
+        "adminEmail": { "type": "string" },
+        "action": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "summary": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["adminUid", "adminEmail", "action", "targetType", "targetId", "summary", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Authenticated user profiles isolated per user and Super Admin"
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": { "$ref": "#/entities/DeliveryAddress" },
+      "description": "User saved delivery addresses"
+    },
+    "/users/{userId}/cart/{cartItemId}": {
+      "schema": { "$ref": "#/entities/CartItem" },
+      "description": "User active shopping cart items"
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/AppNotification" },
+      "description": "User notification inbox"
+    },
+    "/tenants/{tenantId}": {
+      "schema": { "$ref": "#/entities/BusinessTenant" },
+      "description": "Independent multi-tenant business clients"
+    },
+    "/restaurants/{restaurantId}": {
+      "schema": { "$ref": "#/entities/Restaurant" },
+      "description": "Approved restaurant storefronts and partner kitchens"
+    },
+    "/menu_items/{itemId}": {
+      "schema": { "$ref": "#/entities/MenuItem" },
+      "description": "Dish catalog items owned by restaurants"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/FoodOrder" },
+      "description": "Customer orders shared strictly with customer, restaurant owner, assigned rider, and admin"
+    },
+    "/delivery_offers/{orderId}": {
+      "schema": { "$ref": "#/entities/DeliveryOffer" },
+      "description": "PII-free open delivery pickup offers"
+    },
+    "/delivery_partners/{partnerId}": {
+      "schema": { "$ref": "#/entities/DeliveryPartner" },
+      "description": "Delivery partner profiles and verification states"
+    },
+    "/live_locations/{orderId}": {
+      "schema": { "$ref": "#/entities/LiveLocation" },
+      "description": "Real-time GPS coordinates for active deliveries"
+    },
+    "/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/PaymentRecord" },
+      "description": "Order payment and refund ledger"
+    },
+    "/coupons/{couponId}": {
+      "schema": { "$ref": "#/entities/Coupon" },
+      "description": "Active promotional discount coupons"
+    },
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Customer restaurant reviews"
+    },
+    "/support_tickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/SupportTicket" },
+      "description": "Support tickets from users and partners"
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable Super Admin audit trail"
+    }
+  }
+}
